@@ -1,17 +1,15 @@
 CC = clang 
-CSFLAGS = -Wall -O3
+CFLAGS = -Wall -O3 -g
 LIB_DIR = ../libs
-LIBTCOD_DIR = libtcod-1.5.2
-LIBTCOD_DYLIB = libtcod.dylib
-
-INCLUDE_LIBTCOD = $(LIB_DIR)/$(LIBTCOD_DIR)/include
+LIBTCOD_LIB = libtcod-1.5.2/libtcod.dylib
+LIBTCOD_INCLUDE = $(LIB_DIR)/libtcod-1.5.2/include
 
 
 
 conway: conway.c
-	$(CC) -I $(INCLUDE_LIBTCOD) -c conway.c
-	$(CC) -v conway.o $(LIB_DIR)/$(LIBTCOD_DIR)/$(LIBTCOD_DYLIB) -o conway
-	cp $(LIB_DIR)/$(LIBTCOD_DIR)/$(LIBTCOD_DYLIB) .
+	$(CC) -I $(LIBTCOD_INCLUDE) -c conway.c
+	$(CC) -v conway.o $(LIB_DIR)/$(LIBTCOD_LIB) -o conway
+	cp $(LIB_DIR)/$(LIBTCOD_LIB) .
 
 clean:
 	rm *.o
