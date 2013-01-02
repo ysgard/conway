@@ -1,7 +1,7 @@
 CC = clang 
-CFLAGS = -Wall -O3 -g
+CFLAGS = -Wall -O3 -g -pg
 LIB_DIR = ../libs
-LIBTCOD_LIB = libtcod-1.5.2/libtcod.dylib
+LIBTCOD_LIB = libtcod-1.5.2/libtcod_debug.dylib
 LIBTCOD_INCLUDE = $(LIB_DIR)/libtcod-1.5.2/include
 
 
