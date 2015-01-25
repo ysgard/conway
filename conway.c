@@ -32,6 +32,11 @@ Jan Van Uytven (ysgard@gmail.com )
 #define FPS             30
 /**< Clamp the FPS to the given value.*/
 
+float noise_vert = 12.0;
+float noise_hori = 40.0;
+/**< The parameters for the Perlin noise used to produce the initial noise
+ * map */
+
 struct cell {
     bool alive;  /* 0 = dead, 1 = alive */
     int linger; /* A value between 0 and 9 */
@@ -59,6 +64,36 @@ void display_map();
 int live_cells();
 void init_noise();
 
+
+
+int main(void) {
+
+    int end_game = false;
+    int fcount = 0;
+    TCOD_key_t key;
+    char status[SCREEN_WIDTH];
+
+    /* Init game window */
+    TCOD_console_set_custom_font("BrogueFont3.png", TCOD_FONT_TYPE_GREYSCALE|TCOD_FONT_LAYOUT_ASCII_INROW, 0, 0);
+    TCOD_console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, "Conway's Game of Life", false, TCOD_RENDERER_SDL);
+    TCOD_sys_set_fps(FPS);
+
+    /* Initialize map */
+    init_game_map();
+
+    while(!end_game && !TCOD_console_is_window_closed()) {
+        TCOD_console_flush();
+        key = TCOD_console_check_for_keypress(TCOD_KEY_PRESSED);
+        if (key.vk == TCODK_ESCAPE)
+            end_game = true;
+        tick();
+        display_map();
+        TCOD_console_print(NULL, 0, SCREEN_HEIGHT-1, "Frame: %d Cells: %d FPS: %d", ++fcount, live_cells(), TCOD_sys_get_fps());
+    }
+
+    return 0;
+}
+
 /** Create a perlin map and use it to determine a random noise distribution.
  *
  * This is a utility function called during map generation. */
@@ -69,8 +104,8 @@ void init_noise() {
     float noise;
     for (i = 0; i < MAP_WIDTH; ++i) {
         for(j = 0; j < MAP_HEIGHT; ++j) {
-            p[0] = (i * 32.0f)/MAP_WIDTH;
-            p[1] = (j * 32.0f)/MAP_HEIGHT;
+            p[0] = (i * noise_hori)/MAP_WIDTH;
+            p[1] = (j * noise_vert)/MAP_HEIGHT;
             noise = TCOD_noise_get_ex(noise2d, p, TCOD_NOISE_PERLIN);
             if (noise >= 0) map[i][j].alive = true;
         }
@@ -252,31 +287,3 @@ void init_game_map() {
 
 }
 
-
-int main(void) {
-
-    int end_game = false;
-    int fcount = 0;
-    TCOD_key_t key;
-    char status[SCREEN_WIDTH];
-
-    /* Init game window */
-    TCOD_console_set_custom_font("BrogueFont3.png", TCOD_FONT_TYPE_GREYSCALE|TCOD_FONT_LAYOUT_ASCII_INROW, 0, 0);
-    TCOD_console_init_root(SCREEN_WIDTH, SCREEN_HEIGHT, "Conway's Game of Life", false, TCOD_RENDERER_SDL);
-    TCOD_sys_set_fps(FPS);
-
-    /* Initialize map */
-    init_game_map();
-
-    while(!end_game && !TCOD_console_is_window_closed()) {
-        TCOD_console_flush();
-        key = TCOD_console_check_for_keypress(TCOD_KEY_PRESSED);
-        if (key.vk == TCODK_ESCAPE)
-            end_game = true;
-        tick();
-        display_map();
-        TCOD_console_print(NULL, 0, SCREEN_HEIGHT-1, "Frame: %d Cells: %d FPS: %d", ++fcount, live_cells(), TCOD_sys_get_fps());
-    }
-
-    return 0;
-}
