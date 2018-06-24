@@ -16,7 +16,7 @@ Jan Van Uytven (ysgard@gmail.com )
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "libtcod.h"
+#include "libtcod/libtcod.h"
 
 #define MAP_WIDTH       300
 /**< The width of the map in cells */
